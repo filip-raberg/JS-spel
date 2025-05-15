@@ -4,30 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
-    <div id="player_container">
-        <p class="player_points" id="player_1">0</p>
-        <p class="player_points" id="player_2">0</p>
+    <div class="flip-card" id="card1">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <img src="assets/card_back.jpg" alt="Avatar" style="width:100%; height: 100%;">
+            </div>
+            <div class="flip-card-back">
+                <p id="card-number">0</p>
+            </div>
+        </div>
     </div>
 
-    <div id="card_container">
-        <div id="card">
-            <img id="card_back" src="assets/card_back.jpg" alt="">
-        </div>
-    </div>
-    
-    <div id="button_container">
-        <div class="button" id="button_hit">
-            <p id="button_hit_p">Hit</p>
-            <a class="clickable_button" href=""></a>
-        </div>
-        
-        <div class="button" id="button_hold">
-            <p id="button_hold_p">Hold</p>
-            <a class="clickable_button" href=""></a>
-        </div>
-    </div>
+    <!-- Div that acts as a button -->
+    <div id="flipButton" class="flip-button">Hit</div>
+    <div id="standButton" class="stand-button">Stand</div>
+    <script>
+    document.getElementById('flipButton').addEventListener('click', function() {
+        document.getElementById('card1').classList.toggle('flipped');
+    });
+    </script>
 </body>
 </html>
