@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
+    <div class="flip-card-background">
+        <img src="assets/card_back.jpg" alt="Avatar" style="width:100%; height: 100%;">
+    </div>
     <div class="flip-card" id="card1">
         <div class="flip-card-inner">
             <div class="flip-card-front">
@@ -19,13 +22,110 @@
         </div>
     </div>
 
-    <!-- Div that acts as a button -->
+    <div class="scoreboard">
+        <div class="player1">
+            <h2 id="player_heading1">Player 1</h2>
+            <p id="player1-score">0</p>
+        </div>
+        <div class="player2">
+            <h2 id="player_heading2">Player 2</h2>
+            <p id="player2-score">0</p>
+        </div>
+    </div>
+
     <div id="flipButton" class="flip-button">Hit</div>
     <div id="standButton" class="stand-button">Stand</div>
+    <div id="newgameButton" class="newgame-button">New game</div>
+
+    <div id="end">
+        <p id="end-text">player won!</p>
+        <div id="endgameButton" class="endgame-button">New game</div>
+    </div>
+
     <script>
-    document.getElementById('flipButton').addEventListener('click', function() {
-        document.getElementById('card1').classList.toggle('flipped');
-    });
+        let clickable = true;
+        const player1 = { name: "Player 1", score: 0 };
+        const player2 = { name: "Player 2", score: 0 };
+        let turn = player1;
+
+        const setColors = () => {
+            const isP1 = turn === player1;
+            document.getElementById('player_heading1').style.color = isP1 ? "white" : "gray";
+            document.getElementById('player1-score').style.color = isP1 ? "white" : "gray";
+            document.getElementById('player_heading2').style.color = isP1 ? "gray" : "white";
+            document.getElementById('player2-score').style.color = isP1 ? "gray" : "white";
+        };
+
+        const resetGame = () => {
+            player1.score = 0;
+            player2.score = 0;
+            turn = player1;
+            setColors();
+            document.getElementById('player1-score').innerText = player1.score;
+            document.getElementById('player2-score').innerText = player2.score;
+            document.getElementById('end').style.visibility = "hidden";
+            document.getElementById('end').style.opacity = 0;
+        };
+
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        setColors();
+        document.getElementById('end').style.visibility = "hidden";
+        document.getElementById('end').style.opacity = 0;
+
+        document.getElementById('standButton').addEventListener('click', () => {
+            turn = turn === player1 ? player2 : player1;
+            setColors();
+        });
+
+        document.getElementById('newgameButton').addEventListener('click', resetGame);
+        document.getElementById('endgameButton').addEventListener('click', resetGame);
+
+        document.getElementById('flipButton').addEventListener('click', async () => {
+            if (!clickable) return;
+            clickable = false;
+
+            const card = Math.floor(Math.random() * 10) + 1;
+            document.getElementById('card-number').innerText = card;
+            document.getElementById('card1').classList.toggle('flipped');
+
+            if (turn === player1) {
+                if (card === 1) {
+                    player1.score = 0;
+                    turn = player2;
+                } else player1.score += card;
+            } else {
+                if (card === 1) {
+                    player2.score = 0;
+                    turn = player1;
+                } else player2.score += card;
+            }
+
+            if (player1.score >= 100 || player2.score >= 100) {
+                const endEl = document.getElementById('end');
+                endEl.style.visibility = "visible";
+                endEl.style.opacity = 0;
+
+                for (let i = 0; i <= 100; i++) {
+                    setTimeout(() => {
+                        endEl.style.opacity = i / 100;
+                    }, i * 10);
+                }
+
+                document.getElementById('end-text').innerText = `${player1.score > 100 ? 'Player 1' : 'Player 2'} wins!`;
+                player1.score = 0;
+                player2.score = 0;
+            }
+
+            await sleep(1000);
+            setColors();
+            document.getElementById('player1-score').innerText = player1.score;
+            document.getElementById('player2-score').innerText = player2.score;
+            document.getElementById('card1').classList.toggle('flipped');
+            await sleep(300);
+            clickable = true;
+        });
     </script>
+
 </body>
 </html>
